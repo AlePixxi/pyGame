@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 
 from pygame.constants import *
 
@@ -20,6 +21,7 @@ WHITE = (255, 255, 255)
 # Informazioni sulla finestra
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
+SPEED = 5
  
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT)) # creiamo effettivamente la finestra
 DISPLAYSURF.fill(WHITE) # diamo un colore di sfondo
@@ -30,20 +32,101 @@ pygame.display.set_caption("Game") # impostiamo il titolo della finestra
 Di seguito andiamo a creare le classi per il player e per il nemico
 '''
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self,) -> None:
+        super().__init__()
+        self.image = pygame.image.load("Enemy.png") # quando si chiama il costruttore del nemico, si carica anche lo sprite
+        self.rect = self.image.get_rect() # prendiamo il rect (per le collisioni) ottenendolo dall'immagine
+        self.rect.center = (random.randint(40,SCREEN_WIDTH-40), 0)  # impostiamo il centro del rettangolo in una posizione X random
+    
+    def move(self):
+        self.rect.move_ip(0, SPEED) # muovi il rettangolo del nemico sull'asse y di 10
+
+        # se il bordo inferiore del rettangolo arriva al limite inferiore della finestra, torna in cima e dai una nuova posizione X random
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.rect.top = 0
+            self.rect.center = (random.randint(30, 370), 0)
+
+    def draw(self, surface: pygame.surface.Surface):
+        surface.blit(self.image, self.rect) # disegna la superficie, con quella imagine, nella posizione del rettangolo
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self,) -> None:
+        super().__init__()
+        self.image = pygame.image.load("Player.png") # quando si chiama il costruttore del giocatore, si carica anche lo sprite
+        self.rect = self.image.get_rect() # prendiamo il rect (per le collisioni) ottenendolo dall'immagine
+        self.rect.center = (SCREEN_WIDTH/2, 520) # impostiamo il centro del rettangolo in una possizione X random
+
+    def move(self): # prima si chiamava update, con move lo uniformiamo al nemico, per muoverli in gruppo
+        pressed_keys = pygame.key.get_pressed() # prendiamo la lista di tasti premuti
+
+        if (self.rect.left > 0): # se il rect del player non sta sul bordo sinsitro della finestra
+            if (pressed_keys[K_LEFT]): # se tra i tasti premuti c'è left
+                self.rect.move_ip(-5, 0) # muovi di 5 a sinsitra il rettangolo
+
+        if (self.rect.right < SCREEN_WIDTH): # se il rect del player non sta sul bordo destro della finestra    
+            if (pressed_keys[K_RIGHT]): # se tra i tasti premuti c'è right
+                self.rect.move_ip(5, 0) # muovi il rect di 5 verso destra
+    
+    def draw(self, surface: pygame.surface.Surface):
+        surface.blit(self.image, self.rect) # disegna la superficie
+
+
+# istanze di giocatore e nemico
+P1 = Player()
+E1 = Enemy()
+
+# Creiamo due sprite group
+enemies = pygame.sprite.Group()
+enemies.add(E1)
+all_sprites = pygame.sprite.Group()
+all_sprites.add(P1)
+all_sprites.add(E1)
+
+# creiamo un nuovo evento utente
+INC_SPEED = pygame.USEREVENT + 1  # aumentiamo di 1 la variabile che conta il numero di eventi utente in modo che possiamo associare il nostro evento ad un numero
+pygame.time.set_timer(INC_SPEED, 1000) # settiamo un timer per far eseguire l'evento ogni 1000 millisecondi
+
 # Game Loop
 while True:     
-    for event in pygame.event.get():              
+    for event in pygame.event.get():
+
+        if event.type == INC_SPEED: # se l'evento è INC_SPEED, quindi quello creato da noi che parte ogni secondo
+            SPEED += 2 # aumenta di 2 la velocità (del nemico)
+
         if event.type == QUIT: # se l'evento è quit, chiudiamo il gioco
             pygame.quit()
             sys.exit()
 
-    # Metodi per aggiornare il giocatore e il nemico        
-    P1.update()
-    E1.move()
+    #  vecchi Metodi per aggiornare il giocatore e il nemico        
+    # P1.update()
+    # E1.move()
      
-    DISPLAYSURF.fill(WHITE) # ricoloriamo la finestra di bianco
-    P1.draw(DISPLAYSURF) # disegna il giocatore
-    E1.draw(DISPLAYSURF) # disegna il nemico
+    DISPLAYSURF.fill(WHITE) # ricoloriamo la finestra di bianco, altrimenti avremo ogni sprite disegnata nella nuova posizione ad ogni aggiornamento smmata a quelel rimaete disegnate dei vecchi
+    
+    # vecchi metodo per ridisegnare  gli sprtites
+    # P1.draw(DISPLAYSURF) # disegna il giocatore
+    # E1.draw(DISPLAYSURF) # disegna il nemico
+
+    # Muovere e ridisegnare tutti gli sprites
+    for entity in all_sprites:
+        DISPLAYSURF.blit(entity.image, entity.rect)
+        entity.move()
+
+    # Controlliamo le collisioni tra il player e il nemico
+    if pygame.sprite.spritecollideany(P1, enemies): # controlla se lo srte collida con un Group e ritorna la lista di ogni sprite con il quale collide
+        DISPLAYSURF.fill(RED) # schermo rosso
+        pygame.display.update() # aggiorna lo schermo
+
+        # riuovi tutti gli sprite dal gioco
+        for entity in all_sprites:
+            entity.kill()
+        
+        time.sleep(2) # attendi due secondi
+        # chiudi tutto
+        pygame.quit()
+        sys.exit()
          
-    pygame.display.update()
-    FramePerSec.tick(FPS)
+    pygame.display.update() # aggiorna la finestra
+    framePerSec.tick(FPS) # fai un tick del clock, questo permette di ridurre il nuemro di cicli sguendo un determinato timing
