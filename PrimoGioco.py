@@ -22,6 +22,17 @@ WHITE = (255, 255, 255)
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 SPEED = 5
+
+SCORE = 0
+
+# Impostazione del font
+## creiamo due tipi di font, uno più grande e uno più piccolo
+font = pygame.font.SysFont("Verdana", 60) 
+font_small = pygame.font.SysFont("Verdana", 20)
+# andiamo a renderizzare il nostro font, sostanzialmente creando una Surface, con una stringa che rappresenta la scritta, l'antialiasing e il colore
+game_over = font.render("Game Over", True, BLACK)
+
+background = pygame.image.load("AnimatedStreet.png") # carichiamo l'immagine di sfondo
  
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT)) # creiamo effettivamente la finestra
 DISPLAYSURF.fill(WHITE) # diamo un colore di sfondo
@@ -40,10 +51,12 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = (random.randint(40,SCREEN_WIDTH-40), 0)  # impostiamo il centro del rettangolo in una posizione X random
     
     def move(self):
+        global SCORE
         self.rect.move_ip(0, SPEED) # muovi il rettangolo del nemico sull'asse y di 10
 
         # se il bordo inferiore del rettangolo arriva al limite inferiore della finestra, torna in cima e dai una nuova posizione X random
         if self.rect.bottom > SCREEN_HEIGHT:
+            SCORE += 1
             self.rect.top = 0
             self.rect.center = (random.randint(30, 370), 0)
 
@@ -102,8 +115,14 @@ while True:
     #  vecchi Metodi per aggiornare il giocatore e il nemico        
     # P1.update()
     # E1.move()
-     
-    DISPLAYSURF.fill(WHITE) # ricoloriamo la finestra di bianco, altrimenti avremo ogni sprite disegnata nella nuova posizione ad ogni aggiornamento smmata a quelel rimaete disegnate dei vecchi
+    
+    '''
+    è importante disegnare le cose sullo schermo in un determinato ordine in modo da non sovrapporle
+    nel modo sbagliato (es.: prima disegnamo lo sfondo e sopra ci disegnamo il punteggio)
+    '''
+    DISPLAYSURF.blit(background, (0,0)) # disegna l'immagine ad una certa posizione
+    scores = font_small.render(str(SCORE), True, BLACK)  # crea una nuova surface con il punteggio
+    DISPLAYSURF.blit(scores, (10,10)) # mostra sullo schermo il punteggio
     
     # vecchi metodo per ridisegnare  gli sprtites
     # P1.draw(DISPLAYSURF) # disegna il giocatore
@@ -116,7 +135,9 @@ while True:
 
     # Controlliamo le collisioni tra il player e il nemico
     if pygame.sprite.spritecollideany(P1, enemies): # controlla se lo srte collida con un Group e ritorna la lista di ogni sprite con il quale collide
+        pygame.mixer.Sound('crash.wav').play()
         DISPLAYSURF.fill(RED) # schermo rosso
+        DISPLAYSURF.blit(game_over, (30, 250))
         pygame.display.update() # aggiorna lo schermo
 
         # riuovi tutti gli sprite dal gioco
