@@ -6,6 +6,7 @@ import random
 
 from Player import Player
 from background import Background
+from Pipe import Pipe
 
 class Game:
 
@@ -28,6 +29,7 @@ class Game:
 
         self.player = Player()
         self.background = Background()
+        self.pipe = Pipe()
 
 
     def _checkEvents(self):
@@ -37,6 +39,8 @@ class Game:
                 sys.exit()
             if event.type == self.incEvent:
                 gameConstants.SPEED += .1
+            if pygame.key.get_pressed()[K_SPACE]:
+                self.player.jump()
 
     def update(self):
 
@@ -45,12 +49,13 @@ class Game:
 
             self.DISPLAYSURF.fill(gameConstants.BLACK)
             self.background.draw(self.DISPLAYSURF)
+            self.pipe.draw(self.DISPLAYSURF)
             self.player.draw(self.DISPLAYSURF)
 
             pygame.display.update()
             self.framePerSec.tick(60)
 
-
-pygame.init()
-game = Game()
-game.update()
+if __name__ == "__main__":
+    pygame.init()
+    game = Game()
+    game.update()

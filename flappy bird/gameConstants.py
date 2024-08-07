@@ -14,10 +14,10 @@ WHITE = (255, 255, 255)
 
 PLAYER_SPRITES = [
     "./resources/flappy-bird-assets-master/sprites/yellowbird-downflap.png",
-    "/resources/flappy-bird-assets-master/sprites/yellowbird-midflap.png",
-    "/resources/flappy-bird-assets-master/sprites/yellowbird-upflap.png",
+    "./resources/flappy-bird-assets-master/sprites/yellowbird-midflap.png",
+    "./resources/flappy-bird-assets-master/sprites/yellowbird-upflap.png",
     ]
-PIPE = "/resources/flappy-bird-assets-master/sprites/pipe-green.png"
+PIPE = "./resources/flappy-bird-assets-master/sprites/pipe-green.png"
 FAVICON = "./resources/flappy-bird-assets-master/favicon.ico"
 
 BACKGROUND = "./resources/flappy-bird-assets-master/sprites/background-day.png"
