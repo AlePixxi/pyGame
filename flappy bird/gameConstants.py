@@ -1,6 +1,6 @@
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
-SPEED = 5
+SPEED = 2
 
 FPS = 60
 
@@ -19,3 +19,6 @@ PLAYER_SPRITES = [
     ]
 PIPE = "/resources/flappy-bird-assets-master/sprites/pipe-green.png"
 FAVICON = "./resources/flappy-bird-assets-master/favicon.ico"
+
+BACKGROUND = "./resources/flappy-bird-assets-master/sprites/background-day.png"
+BASE = "./resources/flappy-bird-assets-master/sprites/base.png"

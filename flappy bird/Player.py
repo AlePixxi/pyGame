@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.vertical_speed = 10
         self.image = pygame.image.load(self.sprite_num)
         self.rect = self.image.get_rect()
-        self.rect.center = (gameConstants.SCREEN_WIDTH/2, gameConstants.SCREEN_HEIGHT/2)
+        self.rect.center = (gameConstants.SCREEN_WIDTH/2-100, gameConstants.SCREEN_HEIGHT/2)
 
 
     def draw(self, surface: pygame.surface.Surface):

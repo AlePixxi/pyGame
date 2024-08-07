@@ -5,6 +5,7 @@ import sys
 import random
 
 from Player import Player
+from background import Background
 
 class Game:
 
@@ -22,7 +23,11 @@ class Game:
 
         self.framePerSec = pygame.time.Clock()
 
+        self.incEvent = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.incEvent, 1000)
+
         self.player = Player()
+        self.background = Background()
 
 
     def _checkEvents(self):
@@ -30,13 +35,16 @@ class Game:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-
+            if event.type == self.incEvent:
+                gameConstants.SPEED += .1
 
     def update(self):
 
         while (True):
             self._checkEvents()
 
+            self.DISPLAYSURF.fill(gameConstants.BLACK)
+            self.background.draw(self.DISPLAYSURF)
             self.player.draw(self.DISPLAYSURF)
 
             pygame.display.update()
