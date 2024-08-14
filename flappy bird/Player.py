@@ -16,8 +16,8 @@ class Player(pygame.sprite.Sprite):
         self.vertical_speed = 10
         self.image = pygame.image.load(self.sprite_num)
 
-        self.falling_image = pygame.transform.rotate(pygame.image.load(self.falling_sprite), -15)
-        self.jumpig_image = pygame.transform.rotate(pygame.image.load(self.jumping_sprite), 15)
+        self.falling_image = pygame.transform.rotate(pygame.image.load(self.falling_sprite).convert_alpha(), -15)
+        self.jumpig_image = pygame.transform.rotate(pygame.image.load(self.jumping_sprite).convert_alpha(), 15)
 
         self.rect = self.image.get_rect()
         self.rect.center = (gameConstants.SCREEN_WIDTH/2-100, gameConstants.SCREEN_HEIGHT/2)

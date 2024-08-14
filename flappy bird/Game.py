@@ -11,6 +11,10 @@ from Pipe import Pipe
 class Game:
 
     def __init__(self) -> None:
+
+        self.score = 0
+        self.score_Inc = 1
+
         self.fontBig = pygame.font.SysFont("Verdana", 60)
         self.fontSmall = pygame.font.SysFont("Verdana", 24)
 
@@ -46,6 +50,12 @@ class Game:
 
         while (True):
             self._checkEvents()
+
+            if (self.player.rect.left > self.pipe.rect_down.right):
+                self.score += self.score_Inc
+                self.score_Inc = 0
+                print(self.score)
+            else: self.score_Inc = 1
 
             self.DISPLAYSURF.fill(gameConstants.BLACK)
             self.background.draw(self.DISPLAYSURF)

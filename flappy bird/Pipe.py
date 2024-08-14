@@ -11,7 +11,7 @@ class Pipe(pygame.sprite.Sprite):
 
         self.gap = 100
 
-        self.pipe_down = pygame.image.load(gameConstants.PIPE)
+        self.pipe_down = pygame.image.load(gameConstants.PIPE).convert_alpha()
         self.rect_down = self.pipe_down.get_rect()
         self.rect_down.bottom = gameConstants.SCREEN_HEIGHT + self.gap
         self.rect_down.centerx = gameConstants.SCREEN_WIDTH - 80
@@ -23,6 +23,17 @@ class Pipe(pygame.sprite.Sprite):
 
 
     def draw (self, surface: pygame.surface.Surface):
+
+        self.rect_down.centerx -= gameConstants.SPEED
+        self.rect_up.centerx -= gameConstants.SPEED
+
+        if (self.rect_down.right <= 0 and self.rect_up.right <= 0):
+            random_pos = random.randint(-100, 100)
+            self.rect_up.top = -self.gap + random_pos
+            self.rect_down.bottom = gameConstants.SCREEN_HEIGHT + self.gap + random_pos
+
+            self.rect_down.left = gameConstants.SCREEN_WIDTH
+            self.rect_up.left = gameConstants.SCREEN_WIDTH
 
         surface.blit(self.pipe_down, self.rect_down)
         surface.blit(self.pipe_up, self.rect_up)

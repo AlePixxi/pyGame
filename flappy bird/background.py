@@ -7,9 +7,9 @@ class Background(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
 
-        self.base = pygame.transform.scale(pygame.image.load(gameConstants.BASE), (gameConstants.SCREEN_WIDTH, gameConstants.SCREEN_HEIGHT-500))
+        self.base = pygame.transform.scale(pygame.image.load(gameConstants.BASE).convert_alpha(), (gameConstants.SCREEN_WIDTH, gameConstants.SCREEN_HEIGHT-500))
 
-        self.background = pygame.transform.scale(pygame.image.load(gameConstants.BACKGROUND), (gameConstants.SCREEN_WIDTH, gameConstants.SCREEN_HEIGHT))
+        self.background = pygame.transform.scale(pygame.image.load(gameConstants.BACKGROUND).convert_alpha(), (gameConstants.SCREEN_WIDTH, gameConstants.SCREEN_HEIGHT))
         self.posBack = 0
         self.posBase = 0
 
